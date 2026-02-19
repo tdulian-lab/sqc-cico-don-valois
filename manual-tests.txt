@@ -61,4 +61,12 @@ Use `./build.sh` to build CiCo and `./run.sh` to run it if using the command lin
 ## Expected results
 * Should display "Developer" for the user name.
 
+# Module 4: Ticket 401 - Display only numerical input
+
+## Test steps
+1. Build and run CiCo.
+2. Enter abcd1234 into the field.
+
+## Expected results
+* Should display only 1234 in the field.
 
