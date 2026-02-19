@@ -41,8 +41,11 @@ public class Main {
     public void insertString(FilterBypass fb, int offset, String stringToAdd, AttributeSet attr)
         throws BadLocationException
     {
-      if (fb.getDocument() != null) {
-        super.insertString(fb, offset, stringToAdd, attr);
+      if (stringToAdd == null) {
+          return;
+      }
+      if (isNumeric(stringToAdd)) {
+          super.insertString(fb, offset, stringToAdd, attr);
       }
       else {
         Toolkit.getDefaultToolkit().beep();
@@ -53,12 +56,24 @@ public class Main {
     public void replace(FilterBypass fb, int offset, int lengthToDelete, String stringToAdd, AttributeSet attr)
         throws BadLocationException
     {
-      if (fb.getDocument() != null) {
-        super.replace(fb, offset, lengthToDelete, stringToAdd, attr);
+      if (stringToAdd == null) {
+          return;
+      }
+      if (isNumeric(stringToAdd)) {
+          super.replace(fb, offset, lengthToDelete, stringToAdd, attr);
       }
       else {
         Toolkit.getDefaultToolkit().beep();
       }
+    }
+    private boolean isNumeric(String str) {
+        try {
+            Integer.parseInt(str);
+            return true;
+        }
+        catch (NumberFormatException e) {
+            return false;
+        }
     }
   }
 
