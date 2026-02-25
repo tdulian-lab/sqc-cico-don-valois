@@ -70,3 +70,12 @@ Use `./build.sh` to build CiCo and `./run.sh` to run it if using the command lin
 ## Expected results
 * Should display only 1234 in the field.
 
+# Module 5: Ticket 502 - Exit application on window close
+
+## Test steps
+1. Build and run CiCo.
+2. Close the window.
+
+## Expected results
+* Should end the application upon window close.
+
