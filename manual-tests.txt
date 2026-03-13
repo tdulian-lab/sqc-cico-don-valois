@@ -79,3 +79,8 @@ Use `./build.sh` to build CiCo and `./run.sh` to run it if using the command lin
 ## Expected results
 * Should end the application upon window close.
 
+# Module 6: Ticket 602 - Update color scheme
+1. Build and run CiCo.
+
+##Expected results
+*CiCo should be showen in muted color palette
