@@ -16,6 +16,20 @@ public class Main {
   // Current application version.
   private static final int VERSION = 100;
 
+  // Color palette
+  private static final Color BG_MAIN = new Color(45, 45, 45);
+  private static final Color BG_PANEL = new Color(38, 128, 128);
+  private static final Color BG_ERROR = new Color(120, 30, 30);
+
+  private static final Color FG_TEXT = new Color(23, 170, 170);
+
+  private static final Color TEXT_MAIN = new Color(225, 225, 225);
+  private static final Color TEXT_PRIMARY = new Color(29, 162, 172);
+  private static final Color TEXT_SECONDARY = new Color(45, 45, 45);
+
+  private static final Color ACCENT = new Color(45, 45, 45);
+
+
   // Unique strings to identify card panels.
   private static final String CARD_MAIN = "Main";
   private static final String CARD_STATE = "State";
@@ -39,13 +53,10 @@ public class Main {
 
     @Override
     public void insertString(FilterBypass fb, int offset, String stringToAdd, AttributeSet attr)
-        throws BadLocationException
+            throws BadLocationException
     {
-      if (stringToAdd == null) {
-          return;
-      }
-      if (isNumeric(stringToAdd)) {
-          super.insertString(fb, offset, stringToAdd, attr);
+      if (stringToAdd != null && allDigits(stringToAdd)) {
+        super.insertString(fb, offset, stringToAdd, attr);
       }
       else {
         Toolkit.getDefaultToolkit().beep();
@@ -54,26 +65,23 @@ public class Main {
 
     @Override
     public void replace(FilterBypass fb, int offset, int lengthToDelete, String stringToAdd, AttributeSet attr)
-        throws BadLocationException
+            throws BadLocationException
     {
-      if (stringToAdd == null) {
-          return;
-      }
-      if (isNumeric(stringToAdd)) {
-          super.replace(fb, offset, lengthToDelete, stringToAdd, attr);
+      if (stringToAdd != null && allDigits(stringToAdd)) {
+        super.replace(fb, offset, lengthToDelete, stringToAdd, attr);
       }
       else {
         Toolkit.getDefaultToolkit().beep();
       }
     }
-    private boolean isNumeric(String str) {
-        try {
-            Integer.parseInt(str);
-            return true;
+
+    private boolean allDigits(String text) {
+      for (char c : text.toCharArray()) {
+        if (!Character.isDigit(c)) {
+          return false;
         }
-        catch (NumberFormatException e) {
-            return false;
-        }
+      }
+      return true;
     }
   }
 
@@ -190,11 +198,11 @@ public class Main {
   private static void showError(int code) {
     // Module 2 ticket: Show human-readable error messages.
     String[] explanations = {
-        "Please inform staff an unknown error occurred.",
-        "Please inform staff that database wasn't found.",
-        "Please show your card to staff to validate.",
-        "Please inform staff that status updates failed.",
-        "Please inform staff that log updates failed."
+            "Please inform staff an unknown error occurred.",
+            "Please inform staff that database wasn't found.",
+            "Please show your card to staff to validate.",
+            "Please inform staff that status updates failed.",
+            "Please inform staff that log updates failed."
     };
 
     labelReason.setText(explanations[code]);
@@ -245,7 +253,6 @@ public class Main {
     frame.setMinimumSize(new Dimension(320, 240));
     frame.setPreferredSize(new Dimension(640, 480));
     frame.setMaximumSize(new Dimension(640, 480));
-    frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
     // Collect each "card" panel in a deck.
     deck = new JPanel(new CardLayout());
@@ -257,13 +264,13 @@ public class Main {
     panelMain.setMinimumSize(new Dimension(320, 240));
     panelMain.setPreferredSize(new Dimension(640, 480));
     panelMain.setMaximumSize(new Dimension(640, 480));
-    panelMain.setBackground(Color.black);
+    panelMain.setBackground(BG_MAIN);
 
     panelMain.add(Box.createVerticalGlue());
     JLabel labelDirective = new JLabel("Scan card", JLabel.LEADING);
     labelDirective.setFont(fontMain);
     labelDirective.setAlignmentX(JComponent.CENTER_ALIGNMENT);
-    labelDirective.setForeground(Color.cyan);
+    labelDirective.setForeground(FG_TEXT);
     panelMain.add(labelDirective);
 
     fieldNumber = new JTextField();
@@ -272,15 +279,16 @@ public class Main {
     fieldNumber.setPreferredSize(new Dimension(200, 32));
     fieldNumber.setMaximumSize(new Dimension(200, 32));
     fieldNumber.setAlignmentX(JComponent.CENTER_ALIGNMENT);
-    fieldNumber.setBackground(Color.green);
-    fieldNumber.setForeground(Color.magenta);
+    fieldNumber.setBackground(BG_PANEL);
+    fieldNumber.setForeground(TEXT_MAIN);
     panelMain.add(fieldNumber);
 
     JButton updateButton = new JButton("Update");
     updateButton.setAlignmentX(JComponent.CENTER_ALIGNMENT);
     updateButton.addActionListener(new Update());
-    updateButton.setForeground(Color.green);
+    updateButton.setForeground(TEXT_PRIMARY);
     panelMain.add(updateButton);
+
 
     panelMain.add(Box.createVerticalGlue());
 
@@ -290,22 +298,29 @@ public class Main {
     panelStatus.setMinimumSize(new Dimension(320, 240));
     panelStatus.setPreferredSize(new Dimension(640, 480));
     panelStatus.setMaximumSize(new Dimension(640, 480));
-    panelStatus.setBackground(Color.blue);
+    panelStatus.setBackground(BG_MAIN);
 
     panelStatus.add(Box.createVerticalGlue());
+
     labelUser = new JLabel("Registrant", JLabel.LEADING);
     labelUser.setFont(fontMain);
     labelUser.setAlignmentX(JComponent.CENTER_ALIGNMENT);
-    labelUser.setForeground(Color.yellow);
+    labelUser.setForeground(BG_PANEL);
     panelStatus.add(labelUser);
 
     labelState = new JLabel("updated", JLabel.LEADING);
     labelState.setFont(fontMain);
     labelState.setAlignmentX(JComponent.CENTER_ALIGNMENT);
-    labelState.setForeground(Color.magenta);
+    labelState.setForeground(TEXT_PRIMARY);
     panelStatus.add(labelState);
 
     panelStatus.add(Box.createVerticalGlue());
+
+    JButton buttonDone = new JButton("Done");
+    buttonDone.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+    buttonDone.addActionListener(handler);
+    buttonDone.setForeground(TEXT_SECONDARY);
+    panelStatus.add(buttonDone);
 
     // Error panel ////////////////////////////////////////////////////////////
     JPanel panelError = new JPanel();
@@ -313,19 +328,19 @@ public class Main {
     panelError.setMinimumSize(new Dimension(320, 240));
     panelError.setPreferredSize(new Dimension(640, 480));
     panelError.setMaximumSize(new Dimension(640, 480));
-    panelError.setBackground(Color.red);
+    panelError.setBackground(BG_ERROR);
 
     panelError.add(Box.createVerticalGlue());
     labelReason = new JLabel("", JLabel.LEADING);
     labelReason.setFont(fontMain);
     labelReason.setAlignmentX(JComponent.CENTER_ALIGNMENT);
-    labelReason.setForeground(Color.yellow);
+    labelReason.setForeground(TEXT_PRIMARY);
     panelError.add(labelReason);
 
     buttonAcknowledge = new JButton("OK");
     buttonAcknowledge.addActionListener(handler);
     buttonAcknowledge.setAlignmentX(JComponent.CENTER_ALIGNMENT);
-    buttonAcknowledge.setForeground(Color.red);
+    buttonAcknowledge.setForeground(BG_ERROR);
     panelError.add(buttonAcknowledge);
     panelError.add(Box.createVerticalGlue());
 
